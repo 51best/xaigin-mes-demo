@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#10263a">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <link rel="icon" href="./favicon.png">
+  <title>XAIGIN · 维修中心 MES 公开演示</title>
+  <link rel="stylesheet" href="./prototype.css">
+  <link rel="stylesheet" href="./public-demo.css">
+</head>
+<body class="prototype">
+  <div class="demo-banner"><span class="demo-dot"></span> 公开演示 · 全部业务数据为模拟 · 刷新恢复 · 不连接生产系统</div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#/front/overview" aria-label="返回工作台"><span class="brand-mark">X</span><span><b>XAIGIN</b><small>玹擎科技 · 维修中心</small></span></a>
+      <div class="site-switch"><span class="site-icon">深</span><span><small>当前站点</small><b>深圳维修中心</b></span><span class="chevron">⌄</span></div>
+      <nav id="sideNav" aria-label="主导航"></nav>
+      <div class="sidebar-bottom"><span class="avatar">演</span><span><b>演示账号</b><small>公开体验 · 模拟管理视角</small></span><span class="online-dot"></span></div>
+    </aside>
+    <main class="main-area">
+      <header class="topbar">
+        <div class="crumb-line"><span>XAIGIN MES</span><span class="slash">/</span><b id="pageHeading">运营概览</b></div>
+        <div class="top-actions"><label class="global-search"><span>⌕</span><input id="globalSearch" type="search" placeholder="搜索工单、SN、物料…"><kbd>⌘ K</kbd></label><button class="icon-button" data-action="notifications" aria-label="消息通知">♧<i></i></button><span class="top-avatar">演</span></div>
+      </header>
+      <div class="content-wrap">
+        <div id="view" aria-live="polite"></div>
+      </div>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <div id="drawerBackdrop" class="drawer-backdrop" hidden></div>
+  <aside id="drawer" class="detail-drawer" aria-label="详情面板" aria-hidden="true"></aside>
+  <script src="./demo-data.js"></script>
+  <script src="./map-geometry.js"></script>
+  <script src="./prototype.js"></script>
+</body>
+</html>

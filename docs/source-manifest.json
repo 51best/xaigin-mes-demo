@@ -1,0 +1,22 @@
+[
+  {
+    "file": "index.html",
+    "source_sha256": "4153d8292d3e53fea5218a0d81cf7e15189658c32c1d64cc53cce9879bca8197"
+  },
+  {
+    "file": "prototype.css",
+    "source_sha256": "356b63ddf4185f64956e5cc8cd0ec4f44b8dc358bda75bc8a4c137917ee448c3"
+  },
+  {
+    "file": "prototype.js",
+    "source_sha256": "bc9587d08e3d158913aabe196cf1303f6017affe409d86dc045c8421d6ce20fa"
+  },
+  {
+    "file": "demo-data.js",
+    "source_sha256": "663ec0dffedc222b17956d64b258383ec96510f9acff53d497141af9c0ff7224"
+  },
+  {
+    "file": "map-geometry.js",
+    "source_sha256": "bb870f7d92a594a090bc64456e6f7e7dabdaf86f9f7b2f8c1f6f7aeabb9e5c2b"
+  }
+]

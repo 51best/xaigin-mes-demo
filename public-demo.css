@@ -1,0 +1,7 @@
+/* MES-PUBLIC-DEMO-001: hidden off-screen drawers must not widen the page. */
+.detail-drawer:not(.open){display:none}
+.demo-banner{height:auto;min-height:29px;padding:6px 12px;text-align:center;line-height:1.5}
+.status-rail{grid-template-columns:repeat(8,minmax(0,1fr));overflow:hidden}
+.time-cell{overflow-wrap:anywhere}
+.hub-layer{pointer-events:none}
+@media(max-width:720px){.status-rail{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:18px}.rail-step::after{display:none}}
