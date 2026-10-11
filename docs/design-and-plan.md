@@ -9,13 +9,13 @@
 前端资源允许浏览器读取，访客无仓库写入权限。部分按钮提示原型占位，二维码为装饰预览，修改仅存在页面内存，刷新恢复。不能描述为完整真实 MES 或实时机房数据。
 
 ## 实施步骤与验收
-- [ ] 导出五个白名单文件，绝对 /static/reference/ 改为相对路径；公开演示提示及 CSP connect-src none。
-- [ ] 静态检查文件清单、无生产请求、无秘密或数据库文件。
-- [ ] 系统 Chrome 检查 14 导航页、工单抽屉、库存逐级进入、地图切换/筛选、扫码/绑定、财务图表、390/1440 宽度。
-- [ ] 建立独立仓库，推送审阅后的文件，启用 main 根目录 Pages。
-- [ ] 对公网地址重复浏览器检查，确认匿名 HTTP200 与非 GitHub 登录访问；验证仅 51best 有写权限。
-- [ ] 保存发布记录和测试证据，给出准确网址及能力边界。
+- [x] 导出五个白名单文件，绝对 /static/reference/ 改为相对路径；公开演示提示及 CSP connect-src none。
+- [x] 静态检查文件清单、无生产请求、无秘密或数据库文件。
+- [x] 系统 Chrome 检查 14 导航页、工单抽屉、库存逐级进入、地图切换/筛选、扫码/绑定、财务图表、390/1440 宽度。
+- [x] 建立独立仓库，推送审阅后的文件，启用 main 根目录 Pages。
+- [x] 对公网地址重复浏览器检查，确认匿名 HTTP200 与非 GitHub 登录访问；验证仅 51best 有写权限。
+- [x] 保存发布记录和测试证据，给出准确网址及能力边界。
 
 ## 升级方法
-scripts/export.py 按白名单重导出；只读源 reference，永不导出 backend、mes.db、database-backups、web/uploads。
+scripts/export.py 从桌面正式 MES 的 web/reference 按白名单重导出；只读源 reference，永不导出 backend、mes.db、database-backups、web/uploads。
 测试通过后才推送公开仓库；不把业务数据替换进 demo-data.js。正式后端部署为另一项目。

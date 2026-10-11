@@ -1,7 +1,7 @@
 """MES-PUBLIC-DEMO-001: export only the fictional, API-free reference UI."""
 from pathlib import Path
 
-SOURCE = Path('/Users/hz/Desktop/XAIGIN-MES-GitHub/web/reference')
+SOURCE = Path('/Users/hz/Desktop/XAIGIN维修中心MES/web/reference')
 TARGET = Path(__file__).resolve().parents[1]
 FILES = ('index.html', 'prototype.css', 'prototype.js', 'demo-data.js', 'map-geometry.js')
 
