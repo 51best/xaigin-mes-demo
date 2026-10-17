@@ -39,6 +39,19 @@ const routes = ['front/overview','front/production','data/assets','data/inventor
     assert.ok(await page.locator('[data-map-site]').count() > 0, 'filtered map sites');
     await page.locator('[data-map-site]').first().click();
     await page.goto(`${url}#/front/production`, {waitUntil:'networkidle'});
+    assert.equal(await page.locator('.public-workcard').count(),9);
+    const cardIds=[];
+    for(const count of [9,9,6]) {
+      assert.equal(await page.locator('.public-workcard').count(),count);
+      cardIds.push(...await page.locator('.public-workcard').evaluateAll(cards=>cards.map(card=>card.dataset.work)));
+      if(count===9) await page.locator('[data-action="board-next"]').click();
+    }
+    assert.equal(new Set(cardIds).size,24,'all mock cards reachable');
+    assert.equal(await page.locator('[data-action="board-next"]').isDisabled(),true);
+    await page.locator('[data-action="board-prev"]').click();
+    assert.match(await page.locator('.public-board-pager').innerText(),/第 2 \/ 3 页/);
+    assert.ok(!(await page.locator('body').innerText()).includes('九宫格'));
+    await page.screenshot({path:'artifacts/production-paging-1440.png',fullPage:true});
     await page.locator('[data-work]').first().click();
     assert.equal(await page.locator('#drawer').getAttribute('aria-hidden'), 'false');
     assert.match(await page.locator('#drawer').innerText(), /实景机房压测/);

@@ -9,7 +9,7 @@
     people: structuredClone(base.people),
     roles: structuredClone(base.roles), devices: structuredClone(base.devices),
     qrLabels: structuredClone(base.qrLabels), qrEvents: structuredClone(base.qrEvents),
-    audit: structuredClone(base.audit), view: 'front/overview', query: '', status: '',
+    audit: structuredClone(base.audit), workBoardPage: 1, view: 'front/overview', query: '', status: '',
     qrResult: null, toastTimer: null
   };
   const $ = (selector, root=document) => root.querySelector(selector);
@@ -69,8 +69,12 @@
   }
   function production(){
     let list=state.workorders.filter(item=>(!state.query||[item.id,item.customer,item.sn,item.fault,item.owner].join(' ').toLowerCase().includes(state.query.toLowerCase()))&&(state.status==='全部状态'||!state.status||item.status===state.status));
-    const rows=list.map(item=>`<tr data-work="${esc(item.id)}"><td><span class="cell-primary">${esc(item.id)}</span><div class="cell-secondary">${esc(item.updated)} 更新</div></td><td><span class="cell-primary">${esc(item.customer)}</span><div class="cell-secondary">${esc(item.sn)}</div></td><td><span class="cell-primary">${esc(item.model)}</span><div class="cell-secondary">${esc(item.fault)}</div></td><td>${pill(item.status)}</td><td>${item.priority==='加急'?'<span class="priority-high">● 加急</span>':'<span class="priority-normal">普通</span>'}</td><td>${esc(item.owner)}</td><td><button class="link-button" data-work="${esc(item.id)}">查看 ›</button></td></tr>`).join('');
+    const pages=Math.max(1,Math.ceil(list.length/9));
+    state.workBoardPage=Math.min(state.workBoardPage,pages);
+    const boardRows=list.slice((state.workBoardPage-1)*9,state.workBoardPage*9);
+    const rows=boardRows.map(item=>`<tr data-work="${esc(item.id)}"><td><span class="cell-primary">${esc(item.id)}</span><div class="cell-secondary">${esc(item.updated)} 更新</div></td><td><span class="cell-primary">${esc(item.customer)}</span><div class="cell-secondary">${esc(item.sn)}</div></td><td><span class="cell-primary">${esc(item.model)}</span><div class="cell-secondary">${esc(item.fault)}</div></td><td>${pill(item.status)}</td><td>${item.priority==='加急'?'<span class="priority-high">● 加急</span>':'<span class="priority-normal">普通</span>'}</td><td>${esc(item.owner)}</td><td><button class="link-button" data-work="${esc(item.id)}">查看 ›</button></td></tr>`).join('');
     return head('生产工作台','工序队列、负责人和时效集中呈现，现场员工从这里处理每日维修任务。',btn('＋ 登记收货','new-work',true))+
+      panel('现场工单',`<div class="public-workboard">${boardRows.map(item=>`<button class="public-workcard" data-work="${esc(item.id)}"><b>${esc(item.id)}</b>${pill(item.status)}<span>${esc(item.model)}</span><small>${esc(item.customer)}</small><small>${esc(item.fault)}</small></button>`).join('') || '<p>当前筛选没有工单</p>'}</div><div class="public-board-pager"><button class="btn" data-action="board-prev" ${state.workBoardPage<=1?'disabled':''}>上一页</button><span>第 ${state.workBoardPage} / ${pages} 页 · 共 ${list.length} 单</span><button class="btn" data-action="board-next" ${state.workBoardPage>=pages?'disabled':''}>下一页</button></div>`)+
       `<div class="kpi-grid">${kpi('待入场检测','03','最早等待 26 分钟','◉')}${kpi('维修执行中','11','含 2 台待料','⚒')}${kpi('待测试 / OQC','05','需质量人员复核','✓')}${kpi('今日计划交付','08','已完成 3 台','⇧')}</div>`+
       panel('当前工序路径','<div class="steps"><div class="step done">收货拆包</div><div class="step current">入场检测 / IQC</div><div class="step">故障诊断</div><div class="step">报价确认</div><div class="step">维修 / 组装</div><div class="step">维修测试</div><div class="step">独立 OQC</div><div class="step">实景机房压测</div><div class="step">包装发货</div></div>')+
       `<div class="toolbar"><div class="filter-row"><form data-form="work-filter" class="filter-row">${field('query','搜索工单 / SN / 客户…',state.query)}${select('status',statuses,state.status||'全部状态')}<button class="btn" type="submit">筛选</button></form></div><span class="panel-head-meta">${list.length} 条工单 · 原型数据</span></div>`+
@@ -88,7 +92,7 @@
     if(!category){
       return head('库存中心','先按主类和细分类定位物料，再进入最终清单；库存量为虚拟展示。',btn('＋ 新增物料','fake-save',true))+
         `<div class="kpi-grid">${kpi('物料品类','27','九大类演示档案','▤')}${kpi('账面库存','286','按SKU数量汇总','▦')}${kpi('安全库存预警','03','需采购评估','!')}${kpi('今日库存流水','18','入库 / 领料 / 退料','↕')}</div>`+
-        panel('选择物料主类',`<div class="category-grid">${state.categories.map(cat=>`<a class="category-tile" href="#/data/inventory/${cat.code}"><span class="category-count">${state.inventory.filter(row=>row.category===cat.code).length} 项</span><span class="category-icon">${cat.icon}</span><b>${esc(cat.name)}</b><small>3 个细分类 · 点击展开</small></a>`).join('')}</div>`,'九宫格分类')+
+        panel('选择物料主类',`<div class="category-grid">${state.categories.map(cat=>`<a class="category-tile" href="#/data/inventory/${cat.code}"><span class="category-count">${state.inventory.filter(row=>row.category===cat.code).length} 项</span><span class="category-icon">${cat.icon}</span><b>${esc(cat.name)}</b><small>3 个细分类 · 点击展开</small></a>`).join('')}</div>`,'物料分类')+
         `<div class="toolbar-row"><a class="btn" href="#/qr/scan">⌗ 扫码登记入库</a><a class="btn" href="#/data/purchasing">进入采购收货 →</a></div>`;
     }
     const cat=state.categories.find(item=>item.code===category);
@@ -152,7 +156,7 @@
   function closeDrawer(){$('#drawer').classList.remove('open');$('#drawer').setAttribute('aria-hidden','true');$('#drawerBackdrop').hidden=true}
   function scan(code,use){const label=state.qrLabels.find(item=>item.code.toLowerCase()===code.trim().toLowerCase());const event={time:new Intl.DateTimeFormat('zh-CN',{hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(new Date()),user:'演示账号',code:code.trim(),use,result:label?'已核验':'未匹配'};state.qrEvents.unshift(event);state.qrResult=event;render();if(label)showToast('演示扫码核验成功');else showToast('未找到该示例编号')}
   function render(){renderNav();const title=titles[state.view]||'物料清单';$('#pageHeading').textContent=title;let html='';if(state.view==='front/overview')html=overview();else if(state.view==='front/production')html=production();else if(state.view==='data/assets')html=assetPage();else if(state.view==='data/inventory'||state.view.startsWith('data/inventory/'))html=inventoryPage();else if(state.view==='data/purchasing')html=purchasing();else if(state.view==='data/commercial')html=commercial();else if(state.view==='data/finance')html=financePage();else if(state.view==='admin/people')html=peoplePage();else if(state.view==='admin/roles')html=rolesPage();else if(state.view==='admin/audit')html=auditPage();else if(state.view==='qr/scan')html=qrScan();else if(state.view==='qr/devices')html=devicesPage();else if(state.view==='qr/labels')html=labelsPage();else if(state.view==='qr/history')html=historyPage();$('#view').innerHTML=html}
-  function submitFilter(form){const values=Object.fromEntries(new FormData(form));state.query=values.query||'';state.status=values.status||'';render()}
+  function submitFilter(form){const values=Object.fromEntries(new FormData(form));state.workBoardPage=1;state.query=values.query||'';state.status=values.status||'';render()}
   document.addEventListener('click',event=>{
     const target=event.target.closest('[data-work],[data-label],[data-scan-sample],[data-action],[data-unbind],[data-bind-existing],[data-map-site],[data-map-view]');if(!target)return;
     if(target.dataset.work){event.preventDefault();openWork(target.dataset.work);return}
@@ -162,7 +166,7 @@
     if(target.dataset.mapView){state.mapView=target.dataset.mapView;render();return}
     if(target.dataset.unbind){const device=state.devices.find(item=>item.id===target.dataset.unbind);if(device){device.state='待绑定';device.owner=device.kind==='员工手机'?'待员工配对':'待指定工位';device.area='未绑定';showToast('演示设备已解绑')}render();return}
     if(target.dataset.bindExisting){const device=state.devices.find(item=>item.id===target.dataset.bindExisting);if(device){device.state='已绑定';device.owner=device.kind==='员工手机'?'陈工':'备件库位终端 02';device.area=device.kind==='员工手机'?'个人绑定':'备件仓库';device.connection='在线';showToast('演示绑定已更新')}render();return}
-    const action=target.dataset.action;if(action==='close-drawer'){closeDrawer();return}if(action==='toggle-connection'){const device=state.devices.find(item=>item.id===target.dataset.id);if(device)device.connection=device.connection==='在线'?'离线':'在线';render();showToast('已切换演示连接状态');return}if(action==='fake-save'){showToast('演示操作完成，不保存真实业务数据');return}if(action==='new-work'||action==='new-asset'||action==='qr-prefill'||action==='binding-modal'){showToast('此页面为参考原型，未连接真实业务表单');return}if(action==='clear-filter'){state.query='';state.status='';render();return}if(action==='print-preview'){window.print();return}if(action==='notifications'){showToast('当前为演示通知中心');return}
+    const action=target.dataset.action;if(action==='board-prev'||action==='board-next'){state.workBoardPage=Math.max(1,state.workBoardPage+(action==='board-next'?1:-1));render();return}if(action==='close-drawer'){closeDrawer();return}if(action==='toggle-connection'){const device=state.devices.find(item=>item.id===target.dataset.id);if(device)device.connection=device.connection==='在线'?'离线':'在线';render();showToast('已切换演示连接状态');return}if(action==='fake-save'){showToast('演示操作完成，不保存真实业务数据');return}if(action==='new-work'||action==='new-asset'||action==='qr-prefill'||action==='binding-modal'){showToast('此页面为参考原型，未连接真实业务表单');return}if(action==='clear-filter'){state.query='';state.status='';render();return}if(action==='print-preview'){window.print();return}if(action==='notifications'){showToast('当前为演示通知中心');return}
   });
   document.addEventListener('change',event=>{if(event.target.name==='mapProduct'){state.mapProduct=event.target.value;render()}if(event.target.name==='mapYears'){state.mapYears=event.target.value;render()}});
   document.addEventListener('submit',event=>{

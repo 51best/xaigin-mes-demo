@@ -143,3 +143,6 @@ window.referenceData = Object.freeze({
     {time:'09:16:27',user:'李工',action:'查阅检测报告',target:'XA-DEMO-REPORT-018-IQC',result:'仅预览引用记录'}
   ]
 });
+
+/* MES-MINI-BOARD-002: fictional cards to exercise all three preview pages. */
+window.referenceData.workorders.push(...Array.from({length:18},(_,i)=>Object.assign({},window.referenceData.workorders[i%6],{id:'DEMO-WO-'+String(i+1).padStart(3,'0'),customer:'示例客户·产线测试'+(i+1),sn:'XA-DEMO-PAGING-'+String(i+1).padStart(3,'0')})));
