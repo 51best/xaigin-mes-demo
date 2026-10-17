@@ -5,3 +5,35 @@
 .time-cell{overflow-wrap:anywhere}
 .hub-layer{pointer-events:none}
 @media(max-width:720px){.status-rail{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:18px}.rail-step::after{display:none}}
+
+/* MES-MINI-DARK-001: public mock preview follows the mini-program palette. */
+:root{--ink:#f5f9ff;--muted:#b9ccd9;--line:#29475b;--white:#102536;color-scheme:dark}
+html,body{background:#08131f;color:#f5f9ff}
+.prototype #view *, .prototype .topbar *, .prototype .detail-drawer *{color:#f5f9ff}
+.topbar,.kpi-card,.panel,.table-card,.device-card,.qr-label-card,.result-box,.info-card,.drawer-section,.report-card,.finance-quick>span{background:#102536;border-color:#29475b}
+.global-search,.global-search kbd,.field,.btn,.lane-card,.sample-code,.drawer-close,.map-facts span,.result-fact,.finance-inventory>div{background:#142c3e;border-color:#29475b}
+.detail-drawer,.drawer-head,.device-body,.process-lane,.data-table th,.permission-matrix th,.qr-preview,.finance-progress{background:#102536;border-color:#29475b}
+.category-tile,.map-detail{background:linear-gradient(145deg,#102536,#142c3e);border-color:#29475b}
+.category-icon,.kpi-icon,.device-symbol,.pair-code,.map-contract{background:#143c43;color:#6de6f0}
+.map-canvas,.scan-target{background:#142c3e;border-color:#29475b}
+.scan-stage{background:radial-gradient(circle at 50% 38%,#163c49,#102536 68%)}
+.demo-banner,.notice{background:#14303e;color:#d6eaf4;border-color:#29475b}
+.notice-warn,.hub-legend>span,.alert-symbol{background:#342b1c;border-color:#795e2e}
+.prototype #view .notice-warn,.prototype #view .hub-legend>span,.prototype #view .alert-symbol{color:#ffd681}
+.prototype #view p,.prototype #view small,.prototype #view label,.prototype #view .work-sub,.prototype #view .owner-cell,.prototype #view .time-cell,.prototype #view .bar-label,.prototype #view .bar-value,.prototype #view .map-note,.prototype #view .panel-head-meta{color:#b9ccd9}
+.prototype .topbar .global-search input,.prototype #view input,.prototype #view select{color:#f5f9ff}
+input::placeholder{color:#b9ccd9}
+.btn-primary,.prototype #view .btn-primary{background:#075f69;color:#fff;border-color:#087e88}
+.btn:hover,.data-table tbody tr:hover{background:#1b3548}
+.prototype #view .pill{background:#253846;color:#d4e2e9}
+.prototype #view .pill-cyan{background:#143c43;color:#87e5ed}
+.prototype #view .pill-blue{background:#1d3455;color:#a8caff}
+.prototype #view .pill-amber{background:#42371e;color:#ffd681}
+.prototype #view .pill-red{background:#47272f;color:#ff9ca3}
+.prototype #view .pill-green{background:#163e34;color:#7be8b3}
+.prototype #view .pill-gray{background:#253846;color:#d4e2e9}
+.bar-track,.finance-track,.finance-cost-track{background:#253e50}
+.prototype #view .kind-business{background:#163e34;color:#7be8b3}
+.prototype #view .kind-target,.target-contract{background:#253846;color:#d4e2e9}
+.qr-mini{background:#fff}
+.panel-head,.queue-row,.topbar,.data-table td,.permission-matrix td,.device-top,.drawer-head,.report-card,.history-row{border-color:#29475b}

@@ -15,12 +15,15 @@ const routes = ['front/overview','front/production','data/assets','data/inventor
     for (const width of [1440,390]) {
       await page.setViewportSize({width,height:960});
       await page.goto(url, {waitUntil:'networkidle'});
+      assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(8, 19, 31)', 'dark page background');
       assert.match(await page.locator('.demo-banner').innerText(), /全部业务数据为模拟/);
       for (const route of routes) {
         await page.locator(`#sideNav a[href="#/${route}"]`).click();
         await page.waitForFunction(() => document.querySelector('#view h1')?.textContent.length > 0);
         await page.waitForFunction(expected => location.hash === '#/' + expected, route);
+        await page.waitForFunction(expected => document.querySelector('#sideNav a.active')?.getAttribute('href') === '#/' + expected, route);
         assert.ok(await page.locator('#view').innerText().then(text => text.length > 100), `empty view ${route}`);
+        assert.equal(await page.locator('#view h1').evaluate(el => getComputedStyle(el).color), 'rgb(245, 249, 255)', `light heading ${route}`);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `overflow ${width}: ${route}`);
       }
       await page.goto(`${url}#/front/overview`, {waitUntil:'networkidle'});
