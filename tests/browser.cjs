@@ -2,7 +2,7 @@ const {chromium} = require(process.env.PLAYWRIGHT_PATH || '/Users/hz/Desktop/XAI
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const url = process.env.DEMO_URL || 'http://127.0.0.1:8099/';
-const routes = ['front/overview','front/production','data/assets','data/inventory','data/purchasing','data/commercial','data/finance','admin/people','admin/roles','admin/audit','qr/scan','qr/devices','qr/labels','qr/history'];
+const routes = ['line/overview','line/station','line/schedule','front/overview','front/production','data/assets','data/inventory','data/purchasing','data/commercial','data/finance','admin/people','admin/roles','admin/audit','qr/scan','qr/devices','qr/labels','qr/history'];
 (async () => {
   fs.mkdirSync('artifacts', {recursive:true});
   const browser = await chromium.launch({channel:'chrome', headless:true});
@@ -75,9 +75,33 @@ const routes = ['front/overview','front/production','data/assets','data/inventor
     await page.locator(`[data-bind-existing="${id}"]`).waitFor();
     await page.locator(`[data-bind-existing="${id}"]`).click();
     await page.locator(`[data-unbind="${id}"]`).waitFor();
+    await page.goto(`${url}#/line/overview`,{waitUntil:'networkidle'});
+    assert.equal(await page.locator('.production-station').count(),8);
+    assert.match(await page.locator('.production-screen').innerText(),/全部为模拟数据/);
+    await page.locator('[name="prodLine"]').selectOption('DEMO-L2');
+    assert.equal(await page.locator('.production-station').count(),0);
+    await page.locator('[name="prodLine"]').selectOption('DEMO-L1');
+    await page.goto(`${url}#/line/station`,{waitUntil:'networkidle'});
+    await page.locator('[data-action="prod-state"]').click();
+    assert.match(await page.locator('.production-station .production-badge').innerText(),/故障/);
+    await page.locator('[data-action="prod-call"]').click();
+    await page.locator('[data-action="prod-next"]').first().click();
+    assert.match(await page.locator('.production-calls').innerText(),/已接单/);
+    await page.locator('[data-action="prod-next"]').first().click();
+    assert.match(await page.locator('.production-calls').innerText(),/处理中/);
+    await page.locator('[data-action="prod-next"]').first().click();
+    assert.equal(await page.locator('[data-action="prod-next"]').count(),0);
+    await page.goto(`${url}#/line/schedule`,{waitUntil:'networkidle'});
+    const scheduleCount=await page.locator('.production-schedule tbody tr').count();
+    await page.locator('[data-action="prod-add-shift"]').click();
+    assert.equal(await page.locator('.production-schedule tbody tr').count(),scheduleCount+1);
+    await page.locator('[data-action="prod-cancel"]').last().click();
+    assert.match(await page.locator('.production-schedule').innerText(),/已取消/);
+    await page.reload();assert.equal(await page.locator('.production-schedule tbody tr').count(),scheduleCount);
+    await page.screenshot({path:'artifacts/production-schedule.png',fullPage:true});
     assert.deepEqual(errors, [], 'runtime and resource errors');
     assert.ok(requests.every(value => new URL(value).origin === new URL(url).origin), 'unexpected external request');
     assert.ok(requests.every(value => !value.includes('/api/')), 'production API requested');
-    console.log('PASS: 14 pages × 2 widths; map, workorder, inventory, finance, QR, device binding; zero runtime/resource/API errors');
+    console.log('PASS: 17 pages × 2 widths; production station/call/schedule, map, workorder, inventory, finance, QR, device binding; zero runtime/resource/API errors');
   } finally {await browser.close()}
 })().catch(error => {console.error(error);process.exit(1)});
